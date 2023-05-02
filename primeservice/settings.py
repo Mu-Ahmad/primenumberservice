@@ -102,11 +102,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
+TIME_ZONE = "Asia/Karachi"
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -122,7 +119,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Celery - prefix with CELERY_
-CELERY_BROKER_URL = "redis://redis:6379/0"
+# CELERY_BROKER_URL = 'redis://localhost:6379/0' # for local
+CELERY_BROKER_URL = "redis://redis:6379/0" # for container
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"

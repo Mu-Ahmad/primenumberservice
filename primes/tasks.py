@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 import psutil
 import datetime
+import asyncio, time, threading
 from .models import CPUMemoryUsageLog, PrimeNumber
 
 @shared_task
@@ -18,6 +19,7 @@ def log_cpu_memory_usage():
     # Create a new CPUMemoryUsageLog object and save it to the database
     log_entry = CPUMemoryUsageLog(timestamp=current_time, cpu_usage=cpu_usage, memory_usage=memory_usage)
     log_entry.save()
+
 
 @shared_task
 def generate_primes(from_num, to_num):
@@ -37,3 +39,13 @@ def is_prime(num):
         if num % i == 0:
             return False
     return True
+
+
+def run_in_background(func, *args):
+    """
+    Runs a function in the background thread.
+    """
+    t = threading.Thread(target=func, args=args)
+    t.daemon = True
+    t.start()
+
