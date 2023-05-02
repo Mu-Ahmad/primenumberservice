@@ -14,8 +14,8 @@ def monitor(request):
 
 @api_view(['Get'])
 def generate(request):
-    from_num = int(request.POST.get('from'))
-    to_num = int(request.POST.get('to'))
+    from_num = int(request.GET.get('from'))
+    to_num = int(request.GET.get('to'))
     # curr = generate_primes.delay(from_num, to_num) # starting a background job
     run_in_background(generate_primes, from_num, to_num) # starting a background job
     return Response({'status': 'Success'})
