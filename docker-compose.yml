@@ -1,22 +1,44 @@
 version: '3'
 
 services:
+  redis:
+    image: redis
+
   web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    # build: .
+    image: staleflippant/primeservice:web
+    command: sh -c "celery -A primeservice worker --loglevel=info & celery -A primeservice beat --loglevel=info & python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
     ports:
       - "8000:8000"
     depends_on:
       - redis
-      - celery
+    links:
+      - redis
 
-  redis:
-    image: "redis:alpine"
+  web-2:
+    # build: .
+    image: staleflippant/primeservice:web
+    command: sh -c "celery -A primeservice worker --loglevel=info & celery -A primeservice beat --loglevel=info & python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app-2
     ports:
-      - "6379:6379"
-
-  celery:
-    build: .
-    command: celery -A primeservice worker -l info -B --scheduler django_celery_beat.schedulers:DatabaseScheduler
+      - "12345:8000"
     depends_on:
+      - redis
+    links:
+      - redis
+
+  web-3:
+    # build: .
+    image: staleflippant/primeservice:web
+    command: sh -c "celery -A primeservice worker --loglevel=info & celery -A primeservice beat --loglevel=info & python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app-3
+    ports:
+      - "12344:8000"
+    depends_on:
+      - redis
+    links:
       - redis

@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  redis:
+    image: redis
+
+  web:
+    image: staleflippant/primeservice:web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    links:
+      - redis
+
+
+  worker:
+    image: staleflippant/primeservice:worker
+    command: celery -A primeservice worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    links:
+      - redis
+
+  beat:
+    image: staleflippant/primeservice:beat
+    command: celery -A primeservice beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    links:
+      - redis

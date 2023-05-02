@@ -17,4 +17,8 @@ COPY . /app/
 EXPOSE 8000
 
 # Start the Celery worker and beat processes when the container starts
-CMD ["sh", "-c", "celery -A primeservice worker -l info -B --scheduler django_celery_beat.schedulers:DatabaseScheduler && python manage.py runserver 0.0.0.0:8000"]
+CMD python manage.py runserver 0.0.0.0:8000
+
+CMD celery -A primeservice worker --loglevel=info
+
+CMD celery -A primeservice beat --loglevel=info
